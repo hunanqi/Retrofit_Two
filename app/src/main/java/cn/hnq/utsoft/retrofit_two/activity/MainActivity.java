@@ -2,6 +2,7 @@ package cn.hnq.utsoft.retrofit_two.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         UserEntity user = new UserEntity();
         user.phone = "13438284220";
         user.key = "6fe9a2f9cc05e6941bcc45e30a32e51a";
-        NetWork.query(user).subscribe(new Consumer<DataEntity>() {
+        NetWork.query(user,DataEntity.class).subscribe(new Consumer<DataEntity>() {
             @Override
             public void accept(DataEntity dataEntity) throws Exception {
                 Toast.makeText(MainActivity.this, dataEntity.getResult().getCity(), Toast.LENGTH_SHORT).show();
@@ -42,15 +43,9 @@ public class MainActivity extends AppCompatActivity {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
+                Log.i("sss",throwable.toString());
                 Toast.makeText(MainActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
             }
         });
-
-    }
-    class mlis implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            v.getId();
-        }
     }
 }

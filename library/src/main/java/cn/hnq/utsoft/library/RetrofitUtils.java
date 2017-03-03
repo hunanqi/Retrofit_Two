@@ -1,10 +1,13 @@
-package cn.hnq.utsoft.retrofit_two.utils;
+package cn.hnq.utsoft.library;
 
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 
 import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -18,7 +21,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class RetrofitUtils {
-    public static Flowable<String> getFlowable(String baseurl, String url, Object bin){
+    public static<T> Flowable<T> getFlowable(String baseurl, String url, Object bin, final Class<T> tClass){
         //得到包含参数的map集合
         HashMap<String, String> maps = MapUtils.getValuesHash(bin.getClass(), bin);
         //retrofit初始化
@@ -33,9 +36,17 @@ public class RetrofitUtils {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
-        Flowable<String> flowable = retrofitInterface.getData(url, maps);        return flowable;
+        Flowable<String> flowable = retrofitInterface.getData(url, maps);
+        Flowable<T> map = flowable.map(new Function<String, T>() {
+            @Override
+            public T apply(String s) throws Exception {
+                Gson gson = new Gson();
+                T t = gson.fromJson(s, tClass);
+                return t;
+            }
+        });
+        return map;
     }
-
     /**
      * 设置OKhttp的参数，打印网络请求详情
      */

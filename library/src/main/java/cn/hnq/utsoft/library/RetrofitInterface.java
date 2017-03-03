@@ -1,4 +1,4 @@
-package cn.hnq.utsoft.retrofit_two.utils;
+package cn.hnq.utsoft.library;
 
 import java.util.HashMap;
 
@@ -9,7 +9,7 @@ import retrofit2.http.Url;
 
 /**
  * Created by 胡楠启 on 2017/2/24.
- * Function：
+ * Function：reteofit的接口
  * Desc：
  */
 
