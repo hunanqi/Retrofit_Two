@@ -7,10 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cn.hnq.utsoft.retrofit_two.Entity.DataEntity;
-import cn.hnq.utsoft.retrofit_two.Entity.UserEntity;
 import cn.hnq.utsoft.retrofit_two.R;
 import cn.hnq.utsoft.retrofit_two.utils.NetWork;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,20 +35,26 @@ public class MainActivity extends AppCompatActivity {
 
     //网络测试
     private void http() {
-        UserEntity user = new UserEntity();
-        user.phone = "13438284220";
-        user.key = "6fe9a2f9cc05e6941bcc45e30a32e51a";
-        NetWork.query(user,DataEntity.class).subscribe(new Consumer<DataEntity>() {
+        Map<String,String> map=new HashMap<>();
+        map.put("phone","13438284220");
+        map.put("key","6fe9a2f9cc05e6941bcc45e30a32e51a");
+        Disposable subscribe = NetWork.query(map, DataEntity.class).subscribe(new Consumer<DataEntity>() {
             @Override
             public void accept(DataEntity dataEntity) throws Exception {
-                Toast.makeText(MainActivity.this, dataEntity.getResult().getCity(), Toast.LENGTH_SHORT).show();
+               /* Toast.makeText(MainActivity.this, dataEntity.getResult().getCity(), Toast
+                        .LENGTH_SHORT).show();*/
+               Log.i("sss","成功");
             }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                Log.i("sss",throwable.toString());
+                Log.i("sss", throwable.toString());
                 Toast.makeText(MainActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
             }
         });
+        boolean disposed = subscribe.isDisposed();
+        if (!disposed){
+            subscribe.dispose();
+        }
     }
 }
