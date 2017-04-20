@@ -1,8 +1,8 @@
 package cn.hnq.utsoft.library;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -15,5 +15,5 @@ import retrofit2.http.Url;
 
 public interface RetrofitInterface {
     @POST
-    Flowable<String> getData(@Url String url, @QueryMap HashMap<String,String> map);
+    Observable<String> getData(@Url String url, @QueryMap Map<String,String> map);
 }

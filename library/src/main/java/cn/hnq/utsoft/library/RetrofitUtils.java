@@ -4,14 +4,13 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
@@ -21,23 +20,19 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class RetrofitUtils {
-    public static<T> Flowable<T> getFlowable(String baseurl, String url, Object bin, final Class<T> tClass){
-        //得到包含参数的map集合
-        HashMap<String, String> maps = MapUtils.getValuesHash(bin.getClass(), bin);
+    public static<T> Observable<T> getObservable(String baseurl, String url, Map<String,String> maps, final Class<T> tClass){
         //retrofit初始化
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(baseurl)
                 .client(getOkHttp())//增加OKhttp设置生效
                 //增加返回值为String的支持
                 .addConverterFactory(ScalarsConverterFactory.create())
-                //增加返回值为Gson的支持(以实体类返回)
-                .addConverterFactory(GsonConverterFactory.create())
                 //支持RXjava
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
-        Flowable<String> flowable = retrofitInterface.getData(url, maps);
-        Flowable<T> map = flowable.map(new Function<String, T>() {
+        Observable<String> observable = retrofitInterface.getData(url, maps);
+        Observable<T> map = observable.map(new Function<String, T>() {
             @Override
             public T apply(String s) throws Exception {
                 Gson gson = new Gson();
